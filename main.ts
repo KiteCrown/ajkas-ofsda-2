@@ -1,9 +1,15 @@
-namespace SpriteKind {
-    export const enemyBullet = SpriteKind.create()
-}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.setGameOverMessage(true, "escaped!")
     game.gameOver(true)
+})
+sprites.onOverlap(SpriteKind.Moon, SpriteKind.Player, function (sprite, otherSprite) {
+    sprites.destroy(sprite)
+    scene.cameraShake(4, 500)
+    statusbar.value += -15
+    mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
+    timer.after(500, function () {
+        mySprite.setFlag(SpriteFlag.GhostThroughSprites, false)
+    })
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -85,6 +91,19 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 function enemyWake () {
 	
 }
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (info.score() != 0) {
+        music.play(music.createSoundEffect(WaveShape.Noise, 1, 4165, 255, 65, 1000, SoundExpressionEffect.None, InterpolationCurve.Linear), music.PlaybackMode.InBackground)
+        info.changeScoreBy(-1)
+        score += -1
+        statusbar.value += 5
+    } else {
+        music.play(music.createSong(hex`002c010408020900001c00010a006400f4016400000400000000000000000000000000050000040c000400080001240c001000012401001c000f05001202c102c201000405002800000064002800031400060200040c000400080001240c001000012402001c000c960064006d019001000478002c010000640032000000000a0600050c000400080001240c001000012403001c0001dc00690000045e01000400000000000000000000056400010400030c000400080001240c001000012404001c00100500640000041e000004000000000000000000000000000a0400040c000400080001240c001000012405001c000f0a006400f4010a00000400000000000000000000000000000000020c000400080001240c001000012406001c00010a006400f4016400000400000000000000000000000000000000020c000400080001240c001000012407001c00020a006400f4016400000400000000000000000000000000000000030c000400080001240c001000012408001c000e050046006603320000040a002d00000064001400013200020100020c000400080001240c0010000124`), music.PlaybackMode.InBackground)
+    }
+})
+controller.up.onEvent(ControllerButtonEvent.Repeated, function () {
+    extraEffects.createSpreadEffectAt(extraEffects.createSingleColorSpreadEffectData(13, ExtraEffectPresetShape.Spark), mySprite.x + 0, mySprite.y + 8, 100, 3)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (reload == 0) {
         reload = 1
@@ -870,6 +889,9 @@ controller.down.onEvent(ControllerButtonEvent.Released, function () {
         . . . . . f f . . f f . . . . . 
         `)
 })
+controller.right.onEvent(ControllerButtonEvent.Repeated, function () {
+    extraEffects.createSpreadEffectAt(extraEffects.createSingleColorSpreadEffectData(13, ExtraEffectPresetShape.Spark), mySprite.x - 8, mySprite.y - 0, 100, 3)
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     mySprite,
@@ -950,15 +972,6 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
     game.setGameOverMessage(true, "escaped!")
     game.gameOver(true)
-})
-sprites.onOverlap(SpriteKind.enemyBullet, SpriteKind.Player, function (sprite, otherSprite) {
-    sprites.destroy(sprite)
-    scene.cameraShake(4, 500)
-    statusbar.value += -15
-    mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
-    timer.after(500, function () {
-        mySprite.setFlag(SpriteFlag.GhostThroughSprites, false)
-    })
 })
 controller.right.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
@@ -1097,22 +1110,25 @@ controller.up.onEvent(ControllerButtonEvent.Released, function () {
     animation.stopAnimation(animation.AnimationTypes.All, mySprite)
     mySprite.setImage(img`
         . . . . . . f f f f . . . . . . 
-        . . . . f f e e e e f f . . . . 
-        . . . f e e e f f e e e f . . . 
-        . . f f f f f 2 2 f f f f f . . 
-        . . f f e 2 e 2 2 e 2 e f f . . 
-        . . f e 2 f 2 f f 2 f 2 e f . . 
-        . . f f f 2 2 e e 2 2 f f f . . 
-        . f f e f 2 f e e f 2 f e f f . 
-        . f e e f f e e e e f e e e f . 
-        . . f e e e e e e e e e e f . . 
-        . . . f e e e e e e e e f . . . 
-        . . e 4 f f f f f f f f 4 e . . 
+        . . . . f f f 2 2 f f f . . . . 
+        . . . f f f 2 2 2 2 f f f . . . 
+        . . f f f e e e e e e f f f . . 
+        . . f f e 2 2 2 2 2 2 e e f . . 
+        . . f e 2 f f f f f f 2 e f . . 
+        . . f f f f e e e e f f f f . . 
+        . f f e f b f 4 4 f b f e f f . 
+        . f e e 4 1 f d d f 1 4 e e f . 
+        . . f e e d d d d d d e e f . . 
+        . . . f e e 4 4 4 4 e e f . . . 
+        . . e 4 f 2 2 2 2 2 2 f 4 e . . 
         . . 4 d f 2 2 2 2 2 2 f d 4 . . 
-        . . 4 4 f 4 4 4 4 4 4 f 4 4 . . 
+        . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
         . . . . . f f f f f f . . . . . 
         . . . . . f f . . f f . . . . . 
         `)
+})
+controller.down.onEvent(ControllerButtonEvent.Repeated, function () {
+    extraEffects.createSpreadEffectAt(extraEffects.createSingleColorSpreadEffectData(13, ExtraEffectPresetShape.Spark), mySprite.x + 0, mySprite.y - 8, 100, 3)
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -1192,9 +1208,16 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     face = 1
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
-    sprites.destroy(otherSprite, effects.warmRadial, 500)
+    extraEffects.createSpreadEffectOnAnchor(otherSprite, extraEffects.createSingleColorSpreadEffectData(9, ExtraEffectPresetShape.Explosion), 100, 70)
+    extraEffects.createSpreadEffectOnAnchor(otherSprite, extraEffects.createSingleColorSpreadEffectData(8, ExtraEffectPresetShape.Explosion), 100, 70)
+    extraEffects.createSpreadEffectOnAnchor(otherSprite, extraEffects.createSingleColorSpreadEffectData(10, ExtraEffectPresetShape.Explosion), 100, 70)
+    sprites.destroy(otherSprite)
     scene.cameraShake(4, 500)
     info.changeScoreBy(1)
+    score += 1
+})
+controller.left.onEvent(ControllerButtonEvent.Repeated, function () {
+    extraEffects.createSpreadEffectAt(extraEffects.createSingleColorSpreadEffectData(13, ExtraEffectPresetShape.Spark), mySprite.x + 8, mySprite.y - 0, 100, 3)
 })
 let Enemy_projectile: Sprite = null
 let projectile2: Sprite = null
@@ -1203,6 +1226,7 @@ let statusbar: StatusBarSprite = null
 let mySprite: Sprite = null
 let face = 0
 let reload = 0
+let score = 0
 reload = 0
 face = 0
 tiles.setCurrentTilemap(tilemap`level1`)
@@ -1329,28 +1353,30 @@ game.onUpdate(function () {
         }
     }
 })
-game.onUpdateInterval(500, function () {
+game.onUpdateInterval(2000, function () {
     for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
         if (spriteutils.distanceBetween(mySprite, value) <= 70) {
-            Enemy_projectile = sprites.createProjectileFromSprite(img`
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . c b a c . . . . . . 
-                . . . . c c b c f a c . . . . . 
-                . . . . a f b b b a c . . . . . 
-                . . . . a f f b a f c c . . . . 
-                . . . . c b b a f f c . . . . . 
-                . . . . . b b a f a . . . . . . 
-                . . . . . . c b b . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                . . . . . . . . . . . . . . . . 
-                `, value, randint(-100, 100), randint(-100, 100))
-            Enemy_projectile.setKind(SpriteKind.enemyBullet)
+            for (let index = 0; index < 4; index++) {
+                Enemy_projectile = sprites.createProjectileFromSprite(img`
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . c b a c . . . . . . 
+                    . . . . c c b c f a c . . . . . 
+                    . . . . a f b b b a c . . . . . 
+                    . . . . a f f b a f c c . . . . 
+                    . . . . c b b a f f c . . . . . 
+                    . . . . . b b a f a . . . . . . 
+                    . . . . . . c b b . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    . . . . . . . . . . . . . . . . 
+                    `, value, randint(-100, 100), randint(-100, 100))
+                Enemy_projectile.setKind(SpriteKind.Moon)
+            }
         } else {
         	
         }

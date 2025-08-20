@@ -7,7 +7,8 @@
         "pxt-lantern": "github:felixtsu/pxt-lantern#v0.2.1",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
         "carnival": "github:microsoft/arcade-carnival#v0.0.7",
-        "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9"
+        "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9",
+        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0"
     },
     "files": [
         "main.blocks",
