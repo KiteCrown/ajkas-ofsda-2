@@ -8,7 +8,8 @@
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2",
         "carnival": "github:microsoft/arcade-carnival#v0.0.7",
         "pxt-arcade-image-transform": "github:robo-technical-group/pxt-arcade-image-transform#v1.0.9",
-        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0"
+        "Extra Effects": "github:alexszeto/extra-effects#v3.1.0",
+        "Songs": "github:D4ngerKitty/RPGMuisic#f26c7df84609da0be7af7e16d2a64dcd095c1716"
     },
     "files": [
         "main.blocks",
