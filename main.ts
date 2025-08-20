@@ -1191,7 +1191,7 @@ mySprite = sprites.create(img`
     . . . . . f f f f f f . . . . . 
     . . . . . f f . . f f . . . . . 
     `, SpriteKind.Player)
-tiles.placeOnRandomTile(mySprite, sprites.dungeon.purpleInnerSouthEast)
+tiles.placeOnRandomTile(mySprite, sprites.dungeon.purpleInnerNorthWest)
 scene.cameraFollowSprite(mySprite)
 mySprite.setStayInScreen(true)
 controller.moveSprite(mySprite)
